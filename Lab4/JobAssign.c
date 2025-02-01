@@ -72,7 +72,7 @@ int main(){
         scanf("%d", &costMat[i][j]);
     }
     jobAssign(N, costMat);
-    printf("Optimial job assignment:\n");
+    printf("Optimal job assignment:\n");
     for(int i = 0; i < N; i++)
         printf("Worker %d -> task %d\n", i+1, bestAssign[i]+1);
     printf("Minimum cost of assignment: %d\n",minCost);
