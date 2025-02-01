@@ -145,18 +145,25 @@ void printOrder(int order[], int size, const char* label) {
 
 // Main function
 int main() {
-    int vertices = 6;  // Number of vertices
+    int vertices, edges;
+    printf("Enter the number of vertices: ");
+    scanf("%d", &vertices);
+
     Graph* graph = createGraph(vertices);
 
-    // Define edges
-    addEdge(graph, 0, 1);
-    addEdge(graph, 0, 2);
-    addEdge(graph, 1, 3);
-    addEdge(graph, 1, 4);
-    addEdge(graph, 2, 5);
+    printf("Enter the number of edges: ");
+    scanf("%d", &edges);
+
+    printf("Enter the edges (source destination):\n");
+    for (int i = 0; i < edges; i++) {
+        int src, dest;
+        scanf("%d %d", &src, &dest);
+        addEdge(graph, src, dest);
+    }
 
     printf("Performing Breadth-First Search (BFS)...\n");
     BFS(graph);
+
 
     // Print BFS order
     printOrder(bfsOrder, bfsIndex, "BFS");
