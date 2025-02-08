@@ -1,0 +1,136 @@
+#include<stdio.h>
+#include<stdlib.h>
+#define MAX 20	
+
+int x=0, y=0;
+int pus[MAX],pp[MAX];
+int opcount=0;
+
+typedef struct{
+	int adjlist[MAX][MAX];
+	int vertices;
+}Graph;
+
+void init(Graph *gr, int n)
+{
+	gr->vertices= n;
+	for(int i=0; i< gr->vertices; i++)
+		for(int j=0; j< gr->vertices; j++)	gr->adjlist[i][j]=0;
+}
+
+void addedge(Graph* gr, int u, int v){
+	gr->adjlist[u][v]=1;
+}
+
+void adjalst(Graph* gr)
+{
+	printf("\n------------AdjacencyList------------\n");
+	for(int i=0;i< gr->vertices; i++){
+		printf("%d:",i);
+		for(int j=0;j< gr->vertices; j++){
+			if(gr->adjlist[i][j]==1)	printf(" %d ,",j);
+		}
+		printf("\n");
+	}
+}
+
+void dfsh(Graph* gr, int node, int* visited) {
+    pus[x++] = node;
+    visited[node] = 1;
+
+    for (int i = 0; i < gr->vertices; i++) {
+        opcount++;
+        if (gr->adjlist[node][i] == 1 && visited[i] == 0)
+            dfsh(gr, i, visited);
+    }
+
+    pp[y++] = node;
+}
+
+void df(Graph* gr) {
+    int visited[MAX] = {0};
+    for (int i = 0; i < gr->vertices; i++) {
+        if (!visited[i])
+            dfsh(gr, i, visited);
+    }
+}
+
+void source(Graph* gr) {
+    int removed[MAX] = {0};  // To track removed nodes
+
+    printf("\n------------Source Removal (Topological Sort)------------\n");
+
+    while (1) {
+        int found = 0;
+
+        for (int i = 0; i < gr->vertices; i++) {
+
+            if (removed[i] == 0) {  // If node is not removed
+
+                int src = 1;
+                for (int j = 0; j < gr->vertices; j++) {
+                    if (gr->adjlist[j][i] == 1) {  
+                        src = 0;
+                        break;
+                    }
+                }
+
+                // If it's a source, print it and remove it
+                if (src) {
+
+                    printf("%d ", i);
+                    removed[i] = 1; 
+
+                    for (int j = 0; j < gr->vertices; j++) {
+                        opcount++;
+                        gr->adjlist[i][j] = 0;  //source removals
+                    }
+                    
+                    found = 1;
+                    break;  
+                }
+            }
+        }
+
+        if (!found) {
+            break;
+        }
+    }
+
+    printf("\n");
+}
+
+int main() {
+    Graph gr;
+    int nodes;
+
+    printf("Enter the no of vertices: ");
+    scanf("%d", &nodes);
+    init(&gr, nodes);
+    int n=(nodes* (nodes-1))/2;
+    printf("Enter the no of edges(<=%d): ",n);scanf("%d",&n);
+    printf("Enter the edges (u v):\n");
+    for (int i = 0; i < n; i++) {
+        int u, v;
+        scanf("%d %d", &u, &v);
+        printf("added (%d,%d)\n",u,v);
+        addedge(&gr, u, v);
+    }
+
+    adjalst(&gr);
+    //adjmat(&gr);
+    df(&gr);
+
+
+    printf("\n------------Topological sorting------------\n");
+    for(int i=y-1;i>=0;i--)	printf("%d  ", pp[i]);
+    printf("\n");
+
+    printf("Opcount dfs: %d\n",opcount);
+
+    opcount=0;
+    //printf("Opc: %d\n",opcount);
+    source(&gr);
+    printf("Opcount src removal: %d\n",opcount);
+    return 0;
+}
