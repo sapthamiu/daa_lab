@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<time.h>
 
 int opcount = 1;
 
@@ -32,15 +33,29 @@ int partition(int arr[], int n, int sub1[], int size1, int sub2[], int size2, in
 }
 
 void main(){
-    int arr[20], n, sub1[20], sub2[20];
-    printf("Enter the number of elements: ");
-    scanf("%d", &n);
-    printf("Enter the elements: ");
+    //int arr[20], n, sub1[20], sub2[20];
+    // srand(time(0)); // Seed the random number generator
+    // n = rand() % 20 + 1; // Generate a random number between 1 and 20
+    // printf("Number of elements: %d\n", n);
+    // int sum = 0;
+    // for(int i = 0; i < n; i++){
+    //     arr[i] = rand() % 100; // Generate random elements between 0 and 99
+    //     sum += arr[i];
+    // }
+    // printf("Elements: ");
+    // print(arr, n);
+
+    int n, sub1[20], sub2[20];
+    // printf("Enter the number of elements: ");
+    // scanf("%d", &n);
+    n = 10;
+    int arr[10] = {2, 4, 6, 10, 20, 50, 100, 200, 400, 800}; 
+    //printf("Enter the elements: ");
     int sum = 0;
-    for(int i = 0; i < n; i++){
-        scanf("%d", &arr[i]);
-        sum += arr[i];
-    }
+    // for(int i = 0; i < n; i++){
+    //     scanf("%d", &arr[i]);
+    //     sum += arr[i];
+    // }
     if(sum % 2 != 0){
         printf("Partition not possible\n");
         exit(0);
