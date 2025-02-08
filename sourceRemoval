@@ -1,136 +1,83 @@
-#include<stdio.h>
-#include<stdlib.h>
-#define MAX 20	
+#include <stdio.h>
+#include <stdlib.h>
 
-int x=0, y=0;
-int pus[MAX],pp[MAX];
-int opcount=0;
+#define MAX 100
 
-typedef struct{
-	int adjlist[MAX][MAX];
-	int vertices;
-}Graph;
+int adj[MAX][MAX];     // Adjacency matrix
+int inDegree[MAX];     // Array to store in-degrees
+int n;                 // Number of vertices
 
-void init(Graph *gr, int n)
-{
-	gr->vertices= n;
-	for(int i=0; i< gr->vertices; i++)
-		for(int j=0; j< gr->vertices; j++)	gr->adjlist[i][j]=0;
-}
+void topologicalSort() {
+    int sorted[MAX];   // Array to store topological order
+    int count = 0;     // Count of sorted vertices
 
-void addedge(Graph* gr, int u, int v){
-	gr->adjlist[u][v]=1;
-}
-
-void adjalst(Graph* gr)
-{
-	printf("\n------------AdjacencyList------------\n");
-	for(int i=0;i< gr->vertices; i++){
-		printf("%d:",i);
-		for(int j=0;j< gr->vertices; j++){
-			if(gr->adjlist[i][j]==1)	printf(" %d ,",j);
-		}
-		printf("\n");
-	}
-}
-
-void dfsh(Graph* gr, int node, int* visited) {
-    pus[x++] = node;
-    visited[node] = 1;
-
-    for (int i = 0; i < gr->vertices; i++) {
-        opcount++;
-        if (gr->adjlist[node][i] == 1 && visited[i] == 0)
-            dfsh(gr, i, visited);
+    // Compute initial in-degrees
+    for (int i = 0; i < n; i++) {
+        inDegree[i] = 0;
+        for (int j = 0; j < n; j++) {
+            if (adj[j][i] == 1) {
+                inDegree[i]++;
+            }
+        }
     }
 
-    pp[y++] = node;
-}
+    while (count < n) {
+        int foundSource = 0;
 
-void df(Graph* gr) {
-    int visited[MAX] = {0};
-    for (int i = 0; i < gr->vertices; i++) {
-        if (!visited[i])
-            dfsh(gr, i, visited);
-    }
-}
+        // Find a vertex with in-degree 0
+        for (int i = 0; i < n; i++) {
+            if (inDegree[i] == 0) {
+                foundSource = 1;
+                inDegree[i] = -1;  // Mark as removed
+                sorted[count++] = i;
 
-void source(Graph* gr) {
-    int removed[MAX] = {0};  // To track removed nodes
-
-    printf("\n------------Source Removal (Topological Sort)------------\n");
-
-    while (1) {
-        int found = 0;
-
-        for (int i = 0; i < gr->vertices; i++) {
-
-            if (removed[i] == 0) {  // If node is not removed
-
-                int src = 1;
-                for (int j = 0; j < gr->vertices; j++) {
-                    if (gr->adjlist[j][i] == 1) {  
-                        src = 0;
-                        break;
+                // Reduce in-degree of neighbors
+                for (int j = 0; j < n; j++) {
+                    if (adj[i][j] == 1) {
+                        inDegree[j]--;
                     }
                 }
-
-                // If it's a source, print it and remove it
-                if (src) {
-
-                    printf("%d ", i);
-                    removed[i] = 1; 
-
-                    for (int j = 0; j < gr->vertices; j++) {
-                        opcount++;
-                        gr->adjlist[i][j] = 0;  //source removals
-                    }
-                    
-                    found = 1;
-                    break;  
-                }
+                break;
             }
         }
 
-        if (!found) {
-            break;
+        if (!foundSource) {
+            printf("The graph has a cycle. Topological sort not possible.\n");
+            return;
         }
     }
 
+    // Print topological order
+    printf("Topological Sort: ");
+    for (int i = 0; i < count; i++) {
+        printf("%d ", sorted[i]);
+    }
     printf("\n");
 }
 
 int main() {
-    Graph gr;
-    int nodes;
+    int e, u, v;
 
-    printf("Enter the no of vertices: ");
-    scanf("%d", &nodes);
-    init(&gr, nodes);
-    int n=(nodes* (nodes-1))/2;
-    printf("Enter the no of edges(<=%d): ",n);scanf("%d",&n);
-    printf("Enter the edges (u v):\n");
+    printf("Enter the number of vertices: ");
+    scanf("%d", &n);
+
+    printf("Enter the number of edges: ");
+    scanf("%d", &e);
+
+    // Initialize adjacency matrix
     for (int i = 0; i < n; i++) {
-        int u, v;
-        scanf("%d %d", &u, &v);
-        printf("added (%d,%d)\n",u,v);
-        addedge(&gr, u, v);
+        for (int j = 0; j < n; j++) {
+            adj[i][j] = 0;
+        }
     }
 
-    adjalst(&gr);
-    //adjmat(&gr);
-    df(&gr);
+    printf("Enter the edges (u v) format:\n");
+    for (int i = 0; i < e; i++) {
+        scanf("%d %d", &u, &v);
+        adj[u][v] = 1;
+    }
 
+    topologicalSort();
 
-    printf("\n------------Topological sorting------------\n");
-    for(int i=y-1;i>=0;i--)	printf("%d  ", pp[i]);
-    printf("\n");
-
-    printf("Opcount dfs: %d\n",opcount);
-
-    opcount=0;
-    //printf("Opc: %d\n",opcount);
-    source(&gr);
-    printf("Opcount src removal: %d\n",opcount);
     return 0;
 }
