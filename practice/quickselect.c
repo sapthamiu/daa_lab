@@ -4,7 +4,7 @@
 int partition(int a[], int l, int r){
     int i = l, j = r, p = l;
     while(i < j){
-        while(a[i]<= a[p]) i++;
+        while(a[i] <= a[p]) i++;
         while(a[j] > a[p] && j > l) j--;
         if(i < j) swap(a[i], a[j]);
     }
