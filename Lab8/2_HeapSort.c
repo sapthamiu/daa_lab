@@ -2,7 +2,7 @@
 #define swap(x,y){int temp = x; x = y; y = temp;}
 
 void heapify(int a[], int i, int n){        //heapify the subtree at node i
-    int heap = 0, j, temp;
+    int heap = 0, j;
     while(!heap && 2*i <= n){
         j = 2*i;                        //left child
         if(j < n && a[j] < a[j+1])      //if right child > left child
