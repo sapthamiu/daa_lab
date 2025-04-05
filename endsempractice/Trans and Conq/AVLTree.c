@@ -83,22 +83,47 @@ void inorder(node* root){
     inorder(root->right);
 }
 
+// node* predecessor(node* root, int key){
+//     if(root == NULL) return NULL;
+//     if(key <= root->data)   //key on left subtree, so its left child will be pred
+//         return predecessor(root->left, key);
+//     //key on right subtree, parent is a potential pred
+//     node* pred = predecessor(root->right, key);
+//     return pred != NULL ? pred : root;
+// }
 node* predecessor(node* root, int key){
-    if(root == NULL) return NULL;
-    if(key <= root->data)   //key on left subtree, so its left child will be pred
-        return predecessor(root->left, key);
-    //key on right subtree, parent is a potential pred
-    node* pred = predecessor(root->right, key);
-    return pred != NULL ? pred : root;
+    node* cur = root;
+    node* pred = NULL;
+    while(cur != NULL){
+        if(key <= cur->data)
+            cur = cur->left;
+        else{
+            pred = cur;
+            cur = cur->right;
+        }
+    }
+    return pred;
 }
+// node* successor(node* root, int key){
+//     if(root == NULL) return NULL;
+//     if(key >= root->data) 
+//         return successor(root->right, key);
+//     node* suc = successor(root->left, key);
+//     return suc != NULL ? suc : root;
+// }
 node* successor(node* root, int key){
-    if(root == NULL) return NULL;
-    if(key >= root->data) 
-        return successor(root->right, key);
-    node* suc = successor(root->left, key);
-    return suc != NULL ? suc : root;
+    node* cur = root;
+    node* succ = NULL;
+    while(cur != NULL){
+        if(key >= cur->data)
+            cur = cur->right;
+        else{
+            succ = cur;
+            cur = cur->left;
+        }
+    }
+    return succ;
 }
-
 node* delete(node* root, int data){
     if(root == NULL) return root;
     if(data < root->data)
@@ -118,9 +143,12 @@ node* delete(node* root, int data){
         }
         else{
             //node with 2 children; get inorder successor
-            node* temp = root->right;
-            while(temp && temp->left != NULL)
-                temp = temp->left;
+            // node* temp = root->right;
+            // while(temp && temp->left != NULL)
+            //     temp = temp->left;
+            // root->data = temp->data;
+            // root->right = delete(root->right, temp->data);
+            node* temp = successor(root, root->data);
             root->data = temp->data;
             root->right = delete(root->right, temp->data);
         }
